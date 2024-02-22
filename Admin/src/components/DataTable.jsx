@@ -1,13 +1,19 @@
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import { AiOutlineEdit, AiOutlineDelete, AiOutlineFileAdd } from 'react-icons/ai';
+import { MdOutlineNavigateNext, MdOutlineNavigateBefore } from "react-icons/md";
+import { IoIosArrowRoundUp, IoIosArrowRoundDown } from "react-icons/io";
 import { Tooltip } from "react-tooltip";
 
 
-const DataTable = ({data, sortBy, filteredAndSortedData, handleFilterByCategory, handleSortByPrice, add, edit, deleteOne }) => {
+const DataTable = ({data, add, edit, deleteOne }) => {
     const [currentPage, setCurrentPage] = useState(1);
-    const [DataPerPage] = useState(2);
+    const [DataPerPage, setDataPerPage] = useState(5);
+    const [productsPerPage, setProductsPerPage] = useState(4);
     const [searchTerm, setSearchTerm] = useState('');
+    const [sortBy, setSortBy] = useState('');
+    const [filterBy, setFilterBy] = useState('');
+    const [sortName, setSortName] = useState('')
 
     // Function to filter products by search term
     const handleSearch = (event) => {
@@ -17,17 +23,100 @@ const DataTable = ({data, sortBy, filteredAndSortedData, handleFilterByCategory,
     const filteredProducts = data?.filter((item) =>
         item.productName.toLowerCase().includes(searchTerm.toLowerCase())
     );
+
+    // Sort products based on selected sorting option
+    const sortedProducts = filteredProducts?.sort((a, b) => {
+        if (sortBy === 'price-asc') {
+            return parseFloat(a.price) - parseFloat(b.price);
+        } else if (sortBy === 'price-desc') {
+            return parseFloat(b.price) - parseFloat(a.price);
+        } else {
+            return 0;
+        }
+    });
+
+    const sorted = filteredProducts?.sort((a,b) => {
+        // Compare the names of two products
+        const nameA = a.productName.toLowerCase();
+        const nameB = b.productName.toLowerCase();
+
+        if(sortName === 'name-asc'){
+            console.log('asc')
+            if (nameA < nameB) {
+                return -1; // Return -1 if a should come before b
+            }
+            if (nameA > nameB) {
+                return 1; // Return 1 if b should come before a
+            }
+            return 0; // Return 0 if the names are equal
+        }else if(sortName === 'name-desc'){
+            console.log('dec')
+            if (nameA > nameB) {
+                return -1; // Return -1 if a should come before b
+            }
+            if (nameA < nameB) {
+                return 1; // Return 1 if b should come before a
+            }
+            return 0; // Return 0 if the names are equal
+        }
+        else{
+            console.log('nul')
+            return 0
+        }
+
+    });
+
+    const handleSortByName = () =>{
+        console.log(sortBy)
+        if (sortBy === 'name-asc') {
+            setSortName('name-desc');
+        }
+        else if(sortBy === 'name-desc'){
+            setSortName('')
+        }
+        else{
+            console.log('here')
+            setSortName('name-asc');
+        }
+
+    }
+    
+
+    // Function to handle sorting by price
+    const handleSortByPrice = () => {
+        if (sortBy === 'price-asc') {
+            setSortBy('price-desc');
+        }
+        else if(sortBy === 'price-desc'){
+            setSortBy('')
+        }
+        else{
+            setSortBy('price-asc');
+        }
+    };
+    
+    // Function to filter products by category
+    const handleFilterByCategory = (category) => {
+        setFilterBy(category);
+    };
+
+    // Filter products based on selected category
+    const filteredAndSortedData = filterBy
+        ? sortedProducts.filter((product) => product.category === filterBy)
+        : sortedProducts
+    ;
+    
     
     // Pagination
     const indexOfLastProduct = currentPage * DataPerPage;
     const indexOfFirstProduct = indexOfLastProduct - DataPerPage;
     const currentProducts = filteredProducts?.slice(indexOfFirstProduct, indexOfLastProduct);
 
-  // Change page
-  const paginate = pageNumber => setCurrentPage(pageNumber);
+    // Change page
+    const paginate = pageNumber => setCurrentPage(pageNumber);
 
     return(<>
-        <div className="container mx-auto max-w-[800px]">
+        <div className="container mx-auto max-w-[800px] pb-[400px]">
             <div className="flex justify-between m-10 mb-16">
                 <h1 className="text-2xl font-bold mb-4">Product Listing</h1>
                 <button id="add" className="border rounded-md p-2 bg-blue-500 text-white hover:bg-blue-700" onClick={()=>add('Add Product')}><AiOutlineFileAdd /></button>
@@ -40,21 +129,52 @@ const DataTable = ({data, sortBy, filteredAndSortedData, handleFilterByCategory,
                     <option value="category1">Category 1</option>
                     <option value="category2">Category 2</option>
                 </select>
-                <button className="border rounded-md py-2 px-4 bg-blue-500 text-white hover:bg-blue-700" onClick={handleSortByPrice}> Sort by Price {sortBy === 'price-asc' ? '▲' : '▼'}</button>
             </div>
-            <div className="overflow-x-auto overflow-y-auto h-[400px]">
+            <div className="overflow-x-auto overflow-y-auto h-[500px] rounded-md">
                 <table className="min-w-full table-auto">
-                    <thead>
+                    <thead className="sticky top-0">
                         <tr className="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
-                            <th className="py-3 px-6 text-left">Image</th>
-                            <th className="py-3 px-6 text-left">Product Name</th>
-                            <th className="py-3 px-6 text-left">Price</th>
-                            <th className="py-3 px-6 text-left">Qty</th>
-                            <th className="py-3 px-6 text-left">Actions</th>
+                            <th className="py-3 px-6 text-left">Image 
+                                <button className={`opacity-0 hover:opacity-100 text-black w-fit`} onClick={handleSortByPrice}>
+                                    {sortBy !== 'price-asc' ? 
+                                    <IoIosArrowRoundUp className={`text-xl ml-2 ${sortBy === '' ? 'text-gray-500' : ''}`}/> :
+                                    <IoIosArrowRoundDown className="text-xl ml-2" />}
+                                </button>
+                            </th>
+                            <th className="py-3 px-6 text-left">Product Name
+                                <button className={`opacity-0 hover:opacity-100 text-black w-fit`} onClick={handleSortByName}>
+                                    {sortName !== 'name-asc' ? 
+                                    <IoIosArrowRoundUp className={`text-xl ml-2 ${sortName === '' ? 'text-gray-500' : ''}`}/> :
+                                    <IoIosArrowRoundDown className="text-xl ml-2" />}
+                                </button>
+                            </th>
+
+                            <th className="py-3 px-6 text-left">Price
+                                <button className={`opacity-0 hover:opacity-100 text-black w-fit`} onClick={handleSortByPrice}>
+                                    {sortBy !== 'price-asc' ? 
+                                    <IoIosArrowRoundUp className={`text-xl ml-2 ${sortBy === '' ? 'text-gray-500' : ''}`}/> :
+                                    <IoIosArrowRoundDown className="text-xl ml-2" />}
+                                </button>
+                            </th>
+                            <th className="py-3 px-6 text-left">Qty
+                                <button className={`opacity-0 hover:opacity-100 text-black w-fit`} onClick={handleSortByPrice}>
+                                    {sortBy !== 'price-asc' ? 
+                                    <IoIosArrowRoundUp className={`text-xl ml-2 ${sortBy === '' ? 'text-gray-500' : ''}`}/> :
+                                    <IoIosArrowRoundDown className="text-xl ml-2" />}
+                                </button>
+                            </th>
+                            <th className="py-3 px-6 text-left">Actions
+                                <button className={`opacity-0 hover:opacity-100 text-black w-fit`} onClick={handleSortByPrice}>
+                                    {sortBy !== 'price-asc' ? 
+                                    <IoIosArrowRoundUp className={`text-xl ml-2 ${sortBy === '' ? 'text-gray-500' : ''}`}/> :
+                                    <IoIosArrowRoundDown className="text-xl ml-2" />}
+                                </button>
+                            </th>
                         </tr>
                     </thead>
                     <tbody className="text-gray-600 text-sm font-light">
-                        {data && filteredAndSortedData && filteredAndSortedData.map((data) => (
+                        {/* {data && filteredAndSortedData.map((data) => ( */}
+                        {data && currentProducts.map((data)=>(
                         <tr key={data._id} className="border-b border-gray-200 hover:bg-gray-100">
                             <td className="py-3 px-6 text-left whitespace-nowrap">
                                 <img src={data.images ? data.images[0]: ''} alt={data.images} className="w-12 h-12 object-cover" />
@@ -72,26 +192,57 @@ const DataTable = ({data, sortBy, filteredAndSortedData, handleFilterByCategory,
                             </td>
                         </tr>
                         ))}
-                        <div>
-                            {filteredProducts?.length > DataPerPage && (
-                            <ul className="flex justify-center mt-4">
-                                {[...Array(Math.ceil(filteredProducts.length / DataPerPage)).keys()].map(
-                                pageNumber => (
-                                    <li key={pageNumber} className="mx-1">
-                                    <button
-                                        className="px-3 py-1 bg-gray-200 rounded"
-                                        onClick={() => paginate(pageNumber + 1)}
-                                    >
-                                        {pageNumber + 1}
-                                    </button>
-                                    </li>
-                                )
-                                )}
-                            </ul>
-                            )}
-                        </div>
                     </tbody>
                 </table>
+                <div className="sticky bottom-0 bg-white py-4">
+                
+                    <ul className="flex justify-end mt-4 text-sm">
+                        <li>
+                            <span className="mr-4 text-sm">Rows Per Page: </span> 
+                            <select
+                                className="bg-transparent"
+                                value={productsPerPage}
+                                onChange={e => {
+                                setProductsPerPage(parseInt(e.target.value));
+                                setDataPerPage(parseInt(e.target.value))
+                                setCurrentPage(1); // Reset to first page when changing rows per page
+                                }}
+                            > 
+                                <option value="5">5 </option>
+                                <option value="10">10</option>
+                            </select>
+                        </li>
+                        <li>
+                            <p className="ml-10 mr-4 text-sm">
+                                    {indexOfFirstProduct + 1} -{' '}
+                                    {Math.min(indexOfLastProduct, filteredProducts?.length)} of {filteredProducts?.length}
+                            </p>
+                        </li>
+                        <li>
+                            <button
+                                className={`mr-2 text-lg `}
+                                // ${pageNumber + 1 === currentPage ? 'bg-blue-500 text-white' : ''}
+                                
+                                onClick={() => paginate(currentPage - 1)}
+                                disabled={currentPage === 1}
+                            >
+                                <MdOutlineNavigateBefore />
+                            </button>
+                        </li>
+                        <li>
+                            <button
+                                className={`text-lg mr-6 `}
+                                // ${pageNumber + 1 === currentPage ? 'bg-blue-500 text-white' : ''}
+                                
+                                onClick={() => paginate(currentPage + 1)}
+                                disabled={indexOfLastProduct >= filteredProducts?.length}
+                            >
+                                <MdOutlineNavigateNext />
+                            </button>
+                        </li>
+                    </ul>
+                    
+                </div>
             </div>
         </div>
     </>)
