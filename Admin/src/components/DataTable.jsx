@@ -13,7 +13,6 @@ const DataTable = ({data, add, edit, deleteOne }) => {
     const [searchTerm, setSearchTerm] = useState('');
     const [sortBy, setSortBy] = useState('');
     const [filterBy, setFilterBy] = useState('');
-    const [sortName, setSortName] = useState('')
 
     // Function to filter products by search term
     const handleSearch = (event) => {
@@ -34,52 +33,6 @@ const DataTable = ({data, add, edit, deleteOne }) => {
             return 0;
         }
     });
-
-    const sorted = filteredProducts?.sort((a,b) => {
-        // Compare the names of two products
-        const nameA = a.productName.toLowerCase();
-        const nameB = b.productName.toLowerCase();
-
-        if(sortName === 'name-asc'){
-            console.log('asc')
-            if (nameA < nameB) {
-                return -1; // Return -1 if a should come before b
-            }
-            if (nameA > nameB) {
-                return 1; // Return 1 if b should come before a
-            }
-            return 0; // Return 0 if the names are equal
-        }else if(sortName === 'name-desc'){
-            console.log('dec')
-            if (nameA > nameB) {
-                return -1; // Return -1 if a should come before b
-            }
-            if (nameA < nameB) {
-                return 1; // Return 1 if b should come before a
-            }
-            return 0; // Return 0 if the names are equal
-        }
-        else{
-            console.log('nul')
-            return 0
-        }
-
-    });
-
-    const handleSortByName = () =>{
-        console.log(sortBy)
-        if (sortBy === 'name-asc') {
-            setSortName('name-desc');
-        }
-        else if(sortBy === 'name-desc'){
-            setSortName('')
-        }
-        else{
-            console.log('here')
-            setSortName('name-asc');
-        }
-
-    }
     
 
     // Function to handle sorting by price
@@ -142,9 +95,9 @@ const DataTable = ({data, add, edit, deleteOne }) => {
                                 </button>
                             </th>
                             <th className="py-3 px-6 text-left">Product Name
-                                <button className={`opacity-0 hover:opacity-100 text-black w-fit`} onClick={handleSortByName}>
-                                    {sortName !== 'name-asc' ? 
-                                    <IoIosArrowRoundUp className={`text-xl ml-2 ${sortName === '' ? 'text-gray-500' : ''}`}/> :
+                                <button className={`opacity-0 hover:opacity-100 text-black w-fit`} onClick={handleSortByPrice}>
+                                    {sortBy !== 'price-asc' ? 
+                                    <IoIosArrowRoundUp className={`text-xl ml-2 ${sortBy === '' ? 'text-gray-500' : ''}`}/> :
                                     <IoIosArrowRoundDown className="text-xl ml-2" />}
                                 </button>
                             </th>
