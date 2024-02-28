@@ -13,7 +13,8 @@ const Nav = () => {
     const axiosPrivate = useAxiosPrivate();
     const { auth } = useAuth()
     const { cartItems, msg } = useStateContext()
-    const md = window.innerWidth >= 768
+    const md = window.innerWidth >= 768         
+    const [loading, setLoading] = useState(true)  
     
     useEffect(() => {
       const handleResize = () => {
@@ -30,14 +31,21 @@ const Nav = () => {
       let isMounted = true
       const controller = new AbortController()
       const getUser = async() => {
+        setLoading(true)
+        console.log('wole1')
         try{
           const response = await axiosPrivate.get('http://localhost:3500/users', {
             signal: controller.signal
           })
           const { data } = response;
           isMounted && setData(data)
+          setLoading(false)
         }catch(error){
+          console.log('wole err')
           console.log(error)
+          if(error?.response?.status !== 403){
+            setLoading(false)
+          }
         }
       }
       getUser()
@@ -46,7 +54,7 @@ const Nav = () => {
         isMounted = false
         controller.abort()
       }
-    }, [auth])
+    }, [auth?.user])
 
     const toggleClass = () => {
       setDropdown(!dropdown)
@@ -67,7 +75,7 @@ const Nav = () => {
                       <li className='mt-5 md:mt-0'><Link to="/contacts">Contact Us</Link></li>
                     </ul>
                   </div>}
-                  {md && !auth?.accessToken && 
+                  {md && !loading && !auth?.user ? 
                   <div className="nav-icons mt-5 md:mt-0">
                     <Link to="/auth/signin">Log in</Link>
                     <Link to="/cart" className='relative'>cart 
@@ -78,10 +86,10 @@ const Nav = () => {
                         </span>
                       )}
                     </Link>
-                  </div>}
-                  {md && auth?.accessToken && <div className="user-auth mt-5 md:mt-0">
+                  </div> :
+                  <div className="user-auth mt-5 md:mt-0">
                     <div className='nav-acc-con text-center relative'>
-                      <span className='font-bold py-1 pt-0 px-3 mx-0 text-xl text-violet-950 rounded-full border border-solid border-black'>{auth.user.toUpperCase().slice(0,1)}</span>
+                      <span className='font-bold py-1 pt-0 px-3 mx-0 text-xl text-violet-950 rounded-full border border-solid border-black'>{auth?.user?.toUpperCase().slice(0,1)}</span>
                       <div className='nav-acc flex flex-col shadow absolute md:hidden bg-white'>
                         <Link to="/account" className='hover:underline'>Account Setting</Link>
                         <Signout />

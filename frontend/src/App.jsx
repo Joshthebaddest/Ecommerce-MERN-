@@ -1,11 +1,19 @@
 import { Home, Shop, Contacts, Blogs } from './pages'
 import { Nav, Footer, Signin, Signup, Cart, Checkout, Confirmation, Account, ProductContent } from './components'
 
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useNavigate, Navigate } from "react-router-dom";
 import NotFound from './components/404';
+import useAuth from './hooks/useAuth';
 
 
 const App = () => {
+    
+    const { auth } =  useAuth()
+    const navigate = useNavigate()
+    console.log(auth)
+
+    
+    
 
     return (
         <>
@@ -18,11 +26,11 @@ const App = () => {
                 </Route>
                 <Route path="/cart" element={<Cart />} ></Route>
                 <Route path="/checkout" >
-                    <Route index element={<Checkout />}></Route>
-                    <Route path="confirmation" element={<Confirmation />}></Route>
+                    <Route index element={auth?.user ? <Checkout /> : <Navigate to='/auth/signin' />}></Route>
+                    <Route path="confirmation" element={auth?.user ? <Confirmation /> : <Navigate to='/auth/login' />}></Route>
                 </Route>
                 <Route path="/account" >
-                    <Route index element={<Account /> }></Route>
+                    <Route index element={auth.user ? <Account /> :  <Navigate to="/auth/signin" />}></Route>
                 </Route>
                 <Route path="/shop" >
                     <Route index element={<Shop /> }></Route>
