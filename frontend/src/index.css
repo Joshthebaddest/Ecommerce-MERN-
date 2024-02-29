@@ -166,13 +166,13 @@ footer .right a{color: blue;}
     margin-top: 20px;
 }
 
-input ~ span {
+.input-container input ~ span {
     display: none;
 }
-input:invalid[focused="true"] {
+.input-container input:invalid[focused="true"] {
     border-bottom: 1px solid red;
 }
-input:invalid[focused="true"] ~ span {  
+.input-container input:invalid[focused="true"] ~ span {  
     display: block;
 }
 

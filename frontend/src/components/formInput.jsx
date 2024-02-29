@@ -1,6 +1,6 @@
 import { useState } from "react"
 
-const FormInput = ({ handleInputChange, errMessage, label, ...inputProps  }) => {
+const FormInput = ({handleInputChange, errMessage, label, ...inputProps  }) => {
     const [ focused, setFocused ] = useState(false)
 
     const handleFocused = (e) => {
@@ -8,12 +8,7 @@ const FormInput = ({ handleInputChange, errMessage, label, ...inputProps  }) => 
     }
     
     return(
-        <>
-            <input {...inputProps} onChange={handleInputChange} onBlur={handleFocused} focused={focused.toString()}/>
-            <i className={`fa-solid ${inputProps.name === 'email' ?  "fa-envelope" : "fa-lock"} icons absolute`}></i>
-            <span className="text-left text-[12px] text-red-600">{errMessage}</span>
-        </>
-
+        <input {...inputProps} onChange={handleInputChange} onBlur={handleFocused} focused={focused.toString()}/>
     )
 
 }

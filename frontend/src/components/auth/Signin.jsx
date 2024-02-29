@@ -58,7 +58,7 @@ const Signin = () => {
                     <div className="users-profile hidden md:block">
                         <img src="" alt="" />
                         <div className="text-center pt-10">
-                            <p>Dont Have An Account Yet? <Link to="" className="hover:underline">Sign Up</Link></p>
+                            <p>Dont Have An Account Yet? <Link to="/auth/signup" className="hover:underline">Sign Up</Link></p>
                         </div>
                     </div>
                     <div className="p-10 text-center c">
@@ -73,13 +73,13 @@ const Signin = () => {
                             <button type="submit" 
                                 disabled={formData.email === "" && formData.password === ""} 
                                 className={formData.email === "" && formData.password === "" ? 'opacity-70': ''} 
-                            >   {isLoading? 'loading' : 'Sign In'} 
+                            >   {isLoading? 'loading...' : 'Sign In'} 
                                 <i className="fa-solid fa-arrow-right"></i>
                             </button>
                         </form>
                         <div className="link grid grid-cols-1 lg:grid-cols-2" >
                             <a href="" className="hover:underline">forgot password?</a>
-                            <Link to="" className="hover:underline pt-5 lg:pt-0">create an account</Link>
+                            <Link to="/auth/signup" className="hover:underline pt-5 lg:pt-0">create an account</Link>
                         </div>
                     </div>
                 </div>

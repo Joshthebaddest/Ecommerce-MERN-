@@ -1,6 +1,8 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import axios from "../../api/axios";
+import { signupInputData } from '../../assets/data'
+import FormInput from "../formInput";
 
 const Signup = () => {
     const navigate = useNavigate();
@@ -64,28 +66,15 @@ const Signup = () => {
                         <h2>Registration Form</h2>
                         {error && <p className="text-red-500">email already exist</p>}
                         <form action="" className="form text-center" onSubmit={handleSubmit}>
-                            <div className="input-container md:flex relative ">
-                                <input className="mr-2 mb-[20px] md:mb-0" type="text" name="firstName" id="first-name" value={formData.firstName} onChange={handleInputChange} placeholder="First Name" />
-                                <input type="text" name="lastName" id="last-name" value={formData.lastName} onChange={handleInputChange} placeholder="Last Name" /> 
-                            </div>
-                            <div className="input-container relative">
-                            </div>
-                            <div className="input-container relative">
-                                <input type="text" name="username" id="username" value={formData.username} onChange={handleInputChange} placeholder="Username" />
-                                <i className="fa-solid fa-user icons absolute"></i>
-                            </div>
-                            <div className="input-container relative">
-                                <input type="email" name="email" id="email" value={formData.email} onChange={handleInputChange} placeholder="Email" />
-                                <i className="fa-solid fa-envelope icons absolute"></i>
-                            </div>
-                            <div className="input-container relative">
-                                <input type="password" name="password" id="password" value={formData.password} onChange={handleInputChange} placeholder="Password" />
-                                <i className="fa-solid fa-lock icons absolute"></i>
-                            </div>
-                            <div className="input-container relative">
-                                <input type="password" name="confirmPassword" id="confirmPassword" value={formData.confirmPassword} onChange={handleInputChange} placeholder="Confirm Password" />
-                                <i className="fa-solid fa-lock icons absolute"></i>
-                            </div>
+                            
+                            {signupInputData.map(({icon, ...input})=>(
+                                <div key={input.id} className={`input-container relative`}>
+                                    <FormInput {...input } handleInputChange={handleInputChange} />
+                                    {icon}
+                                    <span className="text-left text-[12px] text-red-600">{input.errMessage}</span>
+                                </div>
+                            ))}
+
                             <div className="terms">
                                 <input type="checkbox" name="agree" checked={isChecked} value='agree' onChange={handleCheck}/>
                                 <span className="ml-5">i agree to all <a href="">terms and conditions</a></span>
