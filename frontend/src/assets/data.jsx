@@ -1,8 +1,19 @@
+import { useEffect, useState } from "react";
 import { FaUser } from "react-icons/fa6";
 import { FaEnvelope } from "react-icons/fa6";
 import { FaLock } from "react-icons/fa6";
+import NotFound from "../assets/notFound.jpg";
+import one from "../assets/one.jpg";
+import two from "../assets/two.jpg";
+import three from "../assets/three.jpg";
 
-const data = []
+let data;
+
+const Data = ({ formData }) => {
+    useEffect(()=>{
+        data = formData
+    },[formData.password])
+}
 
 export const inputData = [
     {
@@ -80,10 +91,33 @@ export const signupInputData = [
         type: 'password',
         placeholder:'Confirm Password',
         errMessage: 'password must match',
-        // pattern: formData.password,
+        pattern: data?.password,
         required: true,
         icon: <FaLock className="icons absolute"/>,
     },
 ]
 
-export default data
+export const images =  [
+    {
+        id: 1,
+        src: NotFound,
+        alt: "not found"
+    },
+    {
+        id: 2,
+        src: one,
+        alt: "one"
+    },
+    {
+        id: 3,
+        src: two,
+        alt: "two"
+    },
+    {
+        id: 4,
+        src: three,
+        alt: "not found"
+    }
+]
+
+export default Data

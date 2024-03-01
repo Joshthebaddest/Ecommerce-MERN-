@@ -1,8 +1,10 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import axios from "../../api/axios";
+import Data from "../../assets/data"; 
 import { signupInputData } from '../../assets/data'
 import FormInput from "../formInput";
+
 
 const Signup = () => {
     const navigate = useNavigate();
@@ -54,7 +56,8 @@ const Signup = () => {
 
     return(
         <>
-           <section className="authContainer">
+            <Data formData={formData} className="hidden"/>
+            <section className="authContainer">
                 <div className="login-info md:grid md:grid-cols-2">
                     <div className="users-profile hidden md:block">
                         <img src="" alt="" />
@@ -66,7 +69,7 @@ const Signup = () => {
                         <h2>Registration Form</h2>
                         {error && <p className="text-red-500">email already exist</p>}
                         <form action="" className="form text-center" onSubmit={handleSubmit}>
-                            
+
                             {signupInputData.map(({icon, ...input})=>(
                                 <div key={input.id} className={`input-container relative`}>
                                     <FormInput {...input } handleInputChange={handleInputChange} />

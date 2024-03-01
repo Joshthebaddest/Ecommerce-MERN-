@@ -8,7 +8,7 @@ const FormInput = ({handleInputChange, errMessage, label, ...inputProps  }) => {
     }
     
     return(
-        <input {...inputProps} onChange={handleInputChange} onBlur={handleFocused} focused={focused.toString()}/>
+        <input {...inputProps} onChange={handleInputChange} onBlur={handleFocused} onFocus={()=>inputProps.name === "confirmPassword" && setFocused(true)} focused={focused.toString()}/>
     )
 
 }

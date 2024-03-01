@@ -2,7 +2,7 @@ import Product from "../components/Product";
 import Banner from "../components/home/Banner";
 import Testimonial from "../components/home/Testimonial";
 import useFetch from "../hooks/useFetch";
-import { useEffect,useState } from "react";
+import Carousel from "../components/carousel";
 
 const Home = () => {
     return(
@@ -10,6 +10,7 @@ const Home = () => {
             <Banner />
             <Product btnText={'Shop'}/>
             <Testimonial />
+            <Carousel />
         </>
     )
 
